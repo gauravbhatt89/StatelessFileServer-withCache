@@ -1,0 +1,53 @@
+	/*
+	 * Read Operation: Read the 
+	 * 
+	 */
+
+	public static int read(ServerProperties sp, int offset, int length) throws IOException {
+		System.out.println("Read in the Server");
+		File f = new File("./" + sp.fileName);
+		FileInputStream in = new FileInputStream(f);
+		
+		int total_bytes = (int) f.length();
+		if (sp.offset >= f.length()) {		
+			return -1;
+		}
+		
+		int bytes_available = total_bytes - sp.offset;
+		int bytes_toRead;
+		
+		if (sp.data.length > bytes_available) {
+			bytes_toRead = bytes_available;
+		} else {
+			bytes_toRead = sp.data.length;
+		}
+		
+		if (bytes_toRead <= 0)
+			return -1;
+		
+		int i=0,j=0;
+		if(sp.offset !=0){
+			while (i < sp.offset) {
+				j = in.read(sp.data, 0,sp.bytesRead);
+				i = i + j;
+			}
+		}
+		j = in.read(sp.data,sp.offset,bytes_toRead);
+		in.close();
+		return j;
+	}
+	
+
+
+			} else if (sp.operation.equals("read")) {
+					System.out.println("Operation is read :)");
+					int bytesRead = 1;
+				//	bytesread = Server.read(sp, sp.offset, sp.data.length);
+					if (bytesRead > 0) {
+						sp.offset = sp.offset + bytesRead;
+						sp.bytesRead = bytesRead;
+						sp.lastModifiedTime = Server.getAttribute(sp.fileName);
+					} else {
+						sp.bytesRead = -1;
+					}
+					out.writeObject(sp);
